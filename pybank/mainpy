@@ -1,1 +1,90 @@
+#import libraries
+import csv
+import os 
 
+#declare file to load and output 
+file_to_load = os.path.join("budget_data.csv")
+
+#track various revenue parameters 
+total_months = 0
+total_profit = 0
+prev_profit = 0 
+change = 0
+value=0
+monthly_profit_change= []
+dates = [] 
+greatest_increase = ["",0]
+greatest_decreease = ["",999999999]
+
+
+# read csv and convert to dictionaries 
+with open(file_to_load, newline="", encoding="utf-8") as budget:
+    reader = csv.reader(budget, delimiter=",")
+
+   # Extract first row to avoid appending to net_change_list
+    first_row = next(reader)
+
+    #read the header row 
+    header = next(reader)
+
+    for row in reader:
+        #track total months
+        total_months =+1
+        #net total of profits and losses
+        total_profit = total_profit + int(row[1])
+
+  #first time through set the newAmount for calculation
+        if count == 0:
+            #add 1 for first pass only
+            count = count + 1
+            #set amount for future calculations
+            newAmount = int(row[1])
+            #add amounts to amount list
+            amounts.append(int(row[1]))
+            #add months to month list
+            months.append(str(row[0]))
+        else:
+            #add amounts to amount list
+            amounts.append(int(row[1]))
+            #add months to month list
+            months.append(str(row[0]))
+            #calculate change
+            change.append(int(int(row[1]) - newAmount))
+            #append change month
+            changeMonth.append(str(row[0]))
+            #set new amount for next row
+            newAmount = int(row[1])
+        
+        #calculate results based on for loop entries
+        totalMonths = len(months)
+        totalAmount = sum(amounts)
+    # Calculate max and min values and their months
+    max_increase_value = max(monthly_profit_change)
+    max_decrease_value = min(monthly_profit_change)
+
+    #correlate the max and min value to the right month using the month list
+    #+1 is used at the end of the formula as the month associated with change is the next month
+    max_increase_month = monthly_profit_change.index(max(monthly_profit_change))+1
+    max_decrease_month = monthly_profit_change.index(min(monthly_profit_change))+1
+
+    # Calculate the average change
+    avg_change = sum(monthly_profit_change) / len(monthly_profit_change)
+
+    #generate output summary 
+output = (
+        f"\nfinancial analysis\n"
+        f"----------------------\n"
+        f"total months : {total_months}\n"
+        f"total $ : ${sum(total_profit)}\n"
+        f"average change : {round(avg_change,2)}\n"
+        f"greatest increase in profits: {total_months[max_increase_month]} (${(str(max_increase_value))})\n"
+        f"greatest decrease in profits: {total_months[max_decrease_month]} (${(str(max_decrease_value))})\n
+)
+
+#print the output
+print (output)
+
+#export to textfile
+file_to_output = "output.txt"
+with open (file_to_output,"w") as txt_file:
+        txt_file.write(output)
