@@ -1,1 +1,66 @@
+#import library
+import csv
+import os 
+
+#files to load 
+file_to_load = os.path.join("election_data.csv")
+
+#declare variables
+total_votes = 0
+charles_votes = 0
+diana_votes=0
+raymon_votes=0
+
+#open csv file and convert to dictionaries
+with open (file_to_load,newline="", encoding="utf-8") as elections:
+    reader = csv.reader(elections, delimiter=",")
+    #skip header
+    header = next(reader)
+    #iterate through csv
+    for row in reader:
+        #count the total number of unique voter names and store it as total_votes
+        total_votes+=1
+
+    #as we have three candidates, count the frequency of each name appearing and store as list
+        if row[2]=="Charles Casper Stockham":
+            charles_votes+=1
+        elif row[2]=="Diana DeGette":
+            diana_votes+=1
+        elif row[2]=="Raymon Anthony Doane":
+            raymon_votes+=1
+
+    #to find the person with the most votes make a dictionary out of the lists made
+    candidates = ["Charles Casper Stockham", "Diana DeGette", "Raymon Anthony Doane"]
+    votes = [charles_votes, diana_votes, raymon_votes]
+
+    #zip candidates and the total votes 
+    #determine the winner using max votes 
+    dict_candidates_and_votes=dict(zip(candidates,votes))
+    key=max(dict_candidates_and_votes, key=dict_candidates_and_votes.get)
+
+    #summary
+    charles_percent = (charles_votes/total_votes)*100
+    diana_percent = (diana_votes/total_votes)*100
+    raymon_percent = (raymon_votes/total_votes)*100
+
+   #generate output summary 
+output = (
+        f"\election results\n"
+        f"--------------------\n"
+        f"total votes : {total_votes}\n"
+        f"--------------------\n"
+        f"Charles : {charles_percent:3f}% ({charles_votes})\n"
+        f"Diana : {diana_percent:3f}% ({diana_votes})\n"
+        f"Raymon : {raymon_percent:3f}% ({raymon_votes})\n"
+        f"--------------------\n"
+        f"Winner: {key}\n"
+        f"--------------------\n"
+)
+#print the output
+print (output)
+
+#export to textfile
+file_to_output = "output.txt"
+with open (file_to_output,"w") as txt_file:
+        txt_file.write(output)
 
